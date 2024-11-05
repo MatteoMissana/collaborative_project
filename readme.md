@@ -14,6 +14,7 @@ Prima di eseguire il codice, assicurati di avere installato tutte le dipendenze 
 
 ```bash
 pip install -r requirements.txt
+```
 
 Nota: Si consiglia di utilizzare un ambiente virtuale per mantenere le dipendenze isolate. Per creare un ambiente virtuale, esegui python -m venv nome_tuo_ambiente e attivalo prima di installare i requisiti.
 
@@ -21,6 +22,7 @@ Per avviare il progetto, esegui semplicemente lo script version_2.py. Questo scr
 
 ```bash
 python version_2.py
+```
 
 Assicurati di avere il microfono collegato e correttamente configurato sul tuo dispositivo, poiché il sistema si basa sull'input audio in tempo reale.
 
