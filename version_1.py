@@ -1,10 +1,15 @@
 from utils import registra_audio
 import whisper
 
-#registra_audio()
 
+nome_file = "registrazione.wav"
+#registra_audio(nome_file= nome_file)
 model = whisper.load_model("base")
 
-result = model.transcribe(r"C:\Users\User\cartelle_matteo\collaborative_project\registrazione.wav")
-print(result["text"])
+
+#result = model.transcribe(nome_file)
+
+audio = whisper.load_audio(nome_file)
+
+#print(result["text"])
 
