@@ -8,6 +8,7 @@ Per ottenere una copia locale del progetto, clona questa repository usando il co
 
 ```bash
 git clone https://github.com/MatteoMissana/collaborative_project.git
+```
 
 Prima di eseguire il codice, assicurati di avere installato tutte le dipendenze necessarie. Queste sono specificate nel file requirements.txt. Puoi installarle utilizzando pip con il comando:
 
