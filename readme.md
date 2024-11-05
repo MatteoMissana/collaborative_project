@@ -12,7 +12,7 @@ git clone https://github.com/MatteoMissana/collaborative_project.git
 
 Prima di eseguire il codice, assicurati di avere installato tutte le dipendenze necessarie. Queste sono specificate nel file requirements.txt. Puoi installarle utilizzando pip con il comando:
 
-```bash
+```bash 
 pip install -r requirements.txt
 ```
 
@@ -21,7 +21,7 @@ Nota: Si consiglia di utilizzare un ambiente virtuale per mantenere le dipendenz
 Per avviare il progetto, esegui semplicemente lo script version_2.py. Questo script inizierà ad ascoltare l’audio per rilevare parole chiave e trascriverle automaticamente.
 
 ```bash
-python version_2.py
+python main.py
 ```
 
 Assicurati di avere il microfono collegato e correttamente configurato sul tuo dispositivo, poiché il sistema si basa sull'input audio in tempo reale.
