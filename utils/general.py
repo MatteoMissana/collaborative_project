@@ -36,4 +36,4 @@ def on_keyword_detected(keyword_index, sample_rate):
     # Trascrivi l'audio con Whisper
     model = whisper.load_model("tiny")  # Scegli il modello che preferisci
     result = model.transcribe("audio/detected_audio.wav")
-    print("Transcription:", result["text"])
+    return result["text"]
