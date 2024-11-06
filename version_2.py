@@ -4,7 +4,7 @@ import utils.general as utils  # Importa il file utils con le funzioni
 from utils.wifi_connection import send_string_to_arduino
 
 # Configurazioni del server
-arduino_ip = "192.168.X.X"  # Inserisci l'indirizzo IP di Arduino
+arduino_ip = "192.168.157.29"  # Inserisci l'indirizzo IP di Arduino
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
 # porcupine variables
@@ -29,4 +29,4 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
             # - (direi un solo carattere per stringa)
             # - per ora invio direttamente il messaggio registrato all'arduino, poi va modificato
 
-            send_string_to_arduino(messaggio)
+            send_string_to_arduino(messaggio, arduino_ip, arduino_port)
