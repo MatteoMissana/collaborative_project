@@ -1,0 +1,5 @@
+#virtual environment
+.venv/
+
+#mettete in "data/" i dati che non volete siano condivisi con tutti (robe vostre
+/data/
