@@ -16,7 +16,13 @@ Prima di eseguire il codice, assicurati di avere installato tutte le dipendenze 
 pip install -r requirements.txt
 ```
 
-Nota: Si consiglia di utilizzare un ambiente virtuale per mantenere le dipendenze isolate. Per creare un ambiente virtuale, esegui python -m venv nome_tuo_ambiente e attivalo prima di installare i requisiti.
+Nota: Si consiglia di utilizzare un ambiente virtuale per mantenere le dipendenze isolate. Per creare un ambiente virtuale, esegui
+
+```bash 
+python -m venv nome_tuo_ambiente
+```
+
+e attivalo prima di installare i requisiti.
 
 Per avviare il progetto, esegui semplicemente lo script version_2.py. Questo script inizierà ad ascoltare l’audio per rilevare parole chiave e trascriverle automaticamente.
 
