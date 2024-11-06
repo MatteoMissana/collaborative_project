@@ -23,6 +23,9 @@ void setup() {
   server.begin();
   Serial.print("Server started. IP address: ");
   Serial.println(WiFi.localIP());
+  // Qui io non sono convinto, cioè non posso avere un indirizzo ip ogni volta perchè l'arduino
+  // non è collegato al computer, e quindi non può comunicarlo ogni volta. Però c'è sicuramente un
+  // modo per dargliene uno fisso dai
 }
 
 void loop() {

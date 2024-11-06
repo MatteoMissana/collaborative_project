@@ -24,11 +24,18 @@ python -m venv nome_tuo_ambiente
 
 e attivalo prima di installare i requisiti.
 
-Per avviare il progetto, esegui semplicemente lo script version_2.py. Questo script inizierà ad ascoltare l’audio per rilevare parole chiave e trascriverle automaticamente.
+Per avviare il progetto, collegare la board di arduino al computer, caricarci il codice
+(arduino_robarm/arduino_robarm.ino) ed aprire il monitor seriale.
+Quando apparirà l'indirizzo ip a seriale, copiarlo ed incollarlo nel codice 
+python main.py. Poi esegui semplicemente lo script main.py. 
 
 ```bash
 python main.py
 ```
+Questo script inizierà ad ascoltare l’audio per 
+rilevare parole chiave, trascrivere l'audio e mandare la trascrizione alla board, che la printa a seriale.
+Vabbè intanto fa questo, bisogna fare un po' di modifiche ovviamente. Alcune le ho contrssegnate con dei
+"# TODO:"
 
 Assicurati di avere il microfono collegato e correttamente configurato sul tuo dispositivo, poiché il sistema si basa sull'input audio in tempo reale.
 
