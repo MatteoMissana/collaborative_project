@@ -34,3 +34,19 @@ Assicurati di avere il microfono collegato e correttamente configurato sul tuo d
 
 Se riscontri problemi con l'autenticazione o il riconoscimento della parola chiave, verifica che la tua chiave di accesso sia valida e aggiornata nel codice.
 
+## .gitignore - Guida Rapida
+
+Il file .gitignore indica a Git quali file e cartelle ignorare, evitando di tracciarli e committarli nel repository. È utile per escludere file generati automaticamente, di configurazione locale, o dati sensibili.
+
+Come Funziona
+
+Posizionamento: Inserisci .gitignore nella directory principale del progetto. Ogni entry sarà applicata a quella cartella e alle sue sottodirectory.
+
+Sintassi Base:
+
+
+nomefile.ext – Ignora file specifici
+
+cartella/ – Ignora l’intera cartella
+
+*.estensione – Ignora tutti i file con una specifica estensione (es. *.log)
