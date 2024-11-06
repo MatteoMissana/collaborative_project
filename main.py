@@ -17,4 +17,3 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
 
         if keyword_index >= 0:
             utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
-            break
