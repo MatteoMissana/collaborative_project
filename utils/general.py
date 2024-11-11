@@ -28,7 +28,7 @@ def on_keyword_detected(keyword_index, sample_rate):
     print(f"Keyword {keyword_index + 1} detected! Now recording for 3 seconds...")
 
     # Registra per 3 secondi
-    duration = 3  # in secondi
+    duration = 2 # in secondi
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
     sd.wait()  # Attendi la fine della registrazione
     wav.write("audio/detected_audio.wav", sample_rate, recording)  # Salva l'audio come file WAV
