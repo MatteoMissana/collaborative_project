@@ -1,9 +1,8 @@
 import pvporcupine
 import sounddevice as sd
 import utils.general as utils  # Importa il file utils con le funzioni
-from utils.wifi_connection import send_string_to_arduino
+#from utils.wifi_connection import send_string_to_arduino
 import difflib
-
 # Configurazioni del server
 arduino_ip = "192.168.157.29"  # Inserisci l'indirizzo IP di Arduino
 arduino_port = 80              # Deve corrispondere alla porta configurata su Arduino
@@ -14,7 +13,7 @@ poses = ['home', 'mouth']
 
 # Porcupine variables
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
-keyword_paths =[ '/Users/home/Desktop/uni/COLLABORATIVE ROBOTICS/project/rob_colla/robotic_arm.ppn' ]
+keyword_paths =[ '/Users/home/Desktop/collaborative_project/rob_arm_weights/robotic_arm.ppn' ]
 
 handle = pvporcupine.create(access_key=access_key, keyword_paths=keyword_paths)
 
@@ -42,6 +41,6 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                 print(f"Riconosciuto: {comando_riconosciuto}")
                 
                 # Manda il comando riconosciuto ad Arduino
-                send_string_to_arduino(comando_riconosciuto, arduino_ip, arduino_port)
+                #send_string_to_arduino(comando_riconosciuto, arduino_ip, arduino_port)
             else:
                 print("Comando non riconosciuto. Ripeti, per favore.")
