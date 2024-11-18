@@ -15,6 +15,7 @@ arduino_port = 80           # Deve corrispondere alla porta configurata su Ardui
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
 keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn'] #change it if you have a mac
 
+#definisco
 handle = pvporcupine.create(access_key=access_key, keyword_paths=keyword_paths)
 sample_rate = handle.sample_rate
 frame_length = handle.frame_length
