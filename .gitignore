@@ -1,5 +1,8 @@
 #virtual environment
 .venv/
+/mttenv/
+/.idea/
+/utils/__pycache__/
 
 #mettete in "data/" i dati che non volete siano condivisi con tutti (robe vostre
 /data/
