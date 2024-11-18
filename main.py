@@ -43,11 +43,13 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                 if error < threshold:
                     match=True
 
-            #if more than a command is similar to the detection i select the one with the lower error
-            match_list = [element for element in error if element < threshold]
+            #if more than a command is similar to the detection i select the one with the lowest error
+            best_error = min(error)  # get the minimum value
+            index = error.index(best_error)  # get the index of the minimum
+
 
             if match:
-                comando_riconosciuto = match[0]
+                comando_riconosciuto = commands[index]
                 print(f"Riconosciuto: {comando_riconosciuto}")
 
                 if comando_riconosciuto == 'move the arm down':
@@ -57,6 +59,8 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                     send_string_to_arduino('up', arduino_ip, arduino_port)
             else:
                 print("Comando non riconosciuto. Ripeti, per favore.")
+
+            match = False
 
 
 #TODO:
