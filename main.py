@@ -2,7 +2,13 @@ import pvporcupine
 import sounddevice as sd
 import utils.general as utils  # Importa il file utils con le funzioni
 from utils.wifi_connection import send_string_to_arduino
-import difflib
+from utils.nlp import calculate_wer
+
+#inizialize the error
+error = []
+
+#initilize the threshold
+threshold = 0.5
 
 #comandi
 commands = ['move the arm up', 'move the arm down']
@@ -27,14 +33,18 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
         keyword_index = handle.process(pcm_frame)
 
         if keyword_index >= 0:
-            messaggio = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
+            detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
 
-            print(messaggio)
+            print(detection)
 
+            # for each command, verify the distance from the detected message
+            for i, command in enumerate(commands):
+                error[i] = calculate_wer(detection, command)
+                if error < threshold:
+                    match=True
 
-            match = difflib.get_close_matches(
-                messaggio, commands, n=1, cutoff=0.6  # Soglia alta per accuratezza
-            )
+            #if more than a command is similar to the detection i select the one with the lower error
+            match_list = [element for element in error if element < threshold]
 
             if match:
                 comando_riconosciuto = match[0]
