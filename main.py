@@ -31,6 +31,7 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
 
             print(messaggio)
 
+
             match = difflib.get_close_matches(
                 messaggio, commands, n=1, cutoff=0.6  # Soglia alta per accuratezza
             )
