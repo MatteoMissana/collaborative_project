@@ -11,7 +11,7 @@ commands = ['move the arm up', 'move the arm down']
 arduino_ip = "192.168.157.29"  # Inserisci l'indirizzo IP di Arduino
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
-# porcupine variables
+#%% porcupine variables
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
 keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn'] #change it if you have a mac
 
