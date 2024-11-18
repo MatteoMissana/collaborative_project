@@ -59,3 +59,8 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                 print("Comando non riconosciuto. Ripeti, per favore.")
 
 
+#TODO:
+# 1 nel paper che abbiamo visto io e matteo fanno una sorta di validation in 
+# cui valutavano la precisione nel riconoscimento di ognuno dei comandi delineati, 
+# facendo ripetere da soggetti non madrelingua (ergo noi eccetto sofia) il comando per 30 volte e 
+# poi hanno mostrato l'accuratezza per far vedere quanto bene funzionava il loro modello
