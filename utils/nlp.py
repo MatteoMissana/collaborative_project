@@ -1,6 +1,10 @@
 import numpy as np
 
 def calculate_wer(reference, hypothesis):
+    ''' calculation of the word error rate via the the Levenshtein distance algorithm.
+    arguments:
+    - reference: reference string
+    - hypothesis: hypothesis string'''
     # Split the reference and hypothesis sentences into words
     ref_words = reference.split()
     hyp_words = hypothesis.split()
