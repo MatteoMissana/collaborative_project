@@ -2,16 +2,19 @@ import pvporcupine
 import sounddevice as sd
 import utils.general as utils  # Importa il file utils con le funzioni
 from utils.wifi_connection import send_string_to_arduino
-from utils.nlp import calculate_wer
+from jiwer import cer
 
-#inizialize the error
-error = []
+#initialization of flag "match"
+match = False
 
 #initilize the threshold
 threshold = 0.5
 
 #comandi
-commands = ['move the arm up', 'move the arm down']
+commands = ["arm up", "arm down"]
+
+#inizialize the error
+error = [None] * len(commands)
 
 # Configurazioni del server
 arduino_ip = "192.168.157.29"  # Inserisci l'indirizzo IP di Arduino
@@ -29,18 +32,22 @@ frame_length = handle.frame_length
 with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
     print("Listening...")
     while True:
+        match = False
         pcm_frame = utils.get_next_audio_frame(stream, frame_length)  # Richiama la funzione dal file utils
         keyword_index = handle.process(pcm_frame)
 
+        #if keyword is detected
         if keyword_index >= 0:
+            #functions that returns the detected message
             detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
 
             print(detection)
 
             # for each command, verify the distance from the detected message
             for i, command in enumerate(commands):
-                error[i] = calculate_wer(detection, command)
-                if error < threshold:
+                error[i] = cer(detection, command)
+                print(error[i])
+                if error[i] < threshold:
                     match=True
 
             #if more than a command is similar to the detection i select the one with the lowest error
@@ -52,10 +59,10 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                 comando_riconosciuto = commands[index]
                 print(f"Riconosciuto: {comando_riconosciuto}")
 
-                if comando_riconosciuto == 'move the arm down':
+                if comando_riconosciuto == 'down':
                     send_string_to_arduino('down', arduino_ip, arduino_port)
 
-                if comando_riconosciuto == 'move the arm up':
+                if comando_riconosciuto == 'up':
                     send_string_to_arduino('up', arduino_ip, arduino_port)
             else:
                 print("Comando non riconosciuto. Ripeti, per favore.")
