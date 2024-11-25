@@ -1,58 +1,103 @@
-import numpy as np
-import sounddevice as sd
-import scipy.io.wavfile as wav
-import whisper
-from scipy.signal import butter, lfilter
+import numpy as np  # For numerical operations and array handling
+import sounddevice as sd  # For audio input/output (recording and playback)
+import scipy.io.wavfile as wav  # For reading and writing .wav files
+import whisper  # OpenAI Whisper library for speech-to-text transcription
+from scipy.signal import butter, lfilter  # For creating and applying signal filters
 
-
+# Function to record audio and save it to a .wav file
 def registra_audio(durata=3, frequenza=44100, nome_file="registrazione.wav"):
     """
-    Registra un audio di durata specificata e lo salva in un file .wav.
+    Records audio for a specified duration and saves it to a .wav file.
 
-    Parametri:
-    - durata (int): Durata della registrazione in secondi.
-    - frequenza (int): Frequenza di campionamento in Hz.
-    - nome_file (str): Nome del file audio da salvare.
+    Parameters:
+    - durata (int): Duration of the recording in seconds.
+    - frequenza (int): Sampling rate in Hz.
+    - nome_file (str): Name of the audio file to save.
     """
-    print("Inizio registrazione...")
+    print("Starting recording...")  # Notify user that recording is starting
+    # Record audio with the specified duration and sampling rate, in mono (1 channel)
     audio = sd.rec(int(durata * frequenza), samplerate=frequenza, channels=1, dtype='int16')
-    sd.wait()  # Attende la fine della registrazione
+    sd.wait()  # Wait for the recording to complete
+    # Save the recorded audio as a .wav file
     wav.write(nome_file, frequenza, audio)
-    print(f"Registrazione salvata come '{nome_file}'.")
+    print(f"Recording saved as '{nome_file}'.")  # Notify user that the file was saved
 
+# Function to fetch the next audio frame from a stream
 def get_next_audio_frame(stream, frame_length):
-    pcm = stream.read(frame_length)[0]
-    pcm = np.squeeze(pcm)
-    return pcm
+    """
+    Reads the next audio frame from a real-time audio stream.
 
-#definizione del filtro passa banda e del filtraggio
+    Parameters:
+    - stream: The audio stream to read from.
+    - frame_length: The length of the audio frame.
+
+    Returns:
+    - A numpy array containing the audio frame.
+    """
+    pcm = stream.read(frame_length)[0]  # Read the frame from the stream
+    pcm = np.squeeze(pcm)  # Remove single-dimensional entries for easier processing
+    return pcm  # Return the processed audio frame
+
+# Function to define a bandpass filter
 def butter_bandpass(lowcut, highcut, fs, order=5):
-    nyquist = 0.5 * fs  # Frequenza di Nyquist
-    low = lowcut / nyquist
-    high = highcut / nyquist
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
+    """
+    Creates a bandpass filter with the specified parameters.
 
-# Applicare il filtro al segnale
+    Parameters:
+    - lowcut (float): Lower cutoff frequency in Hz.
+    - highcut (float): Upper cutoff frequency in Hz.
+    - fs (int): Sampling rate in Hz.
+    - order (int): Order of the filter.
+
+    Returns:
+    - b, a: The coefficients of the filter.
+    """
+    nyquist = 0.5 * fs  # Calculate the Nyquist frequency
+    low = lowcut / nyquist  # Normalize the lower cutoff frequency
+    high = highcut / nyquist  # Normalize the upper cutoff frequency
+    b, a = butter(order, [low, high], btype='band')  # Create a bandpass filter
+    return b, a  # Return the filter coefficients
+
+# Function to apply a bandpass filter to an audio signal
 def bandpass_filter(data, lowcut, highcut, fs, order=5):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
+    """
+    Applies a bandpass filter to an audio signal.
 
+    Parameters:
+    - data: A numpy array containing the audio signal to filter.
+    - lowcut: Lower cutoff frequency in Hz.
+    - highcut: Upper cutoff frequency in Hz.
+    - fs: Sampling rate in Hz.
+    - order: Order of the filter.
+
+    Returns:
+    - The filtered audio signal.
+    """
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)  # Get filter coefficients
+    y = lfilter(b, a, data)  # Apply the filter to the audio signal
+    return y  # Return the filtered signal
+
+# Function triggered when a keyword is detected
 def on_keyword_detected(keyword_index, sample_rate):
+    """
+    Action performed when a keyword is detected.
+
+    Parameters:
+    - keyword_index (int): Index of the detected keyword.
+    - sample_rate (int): Sampling rate in Hz.
+    """
     print(f"Keyword {keyword_index + 1} detected! Now recording for 3 seconds...")
 
-    # Registra per 3 secondi
-    duration = 1 # in secondi
+    # Record a short audio segment upon keyword detection
+    duration = 1  # Duration of the recording in seconds
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
-    sd.wait()  # Attendi la fine della registrazione
-    #wav.write("audio/detected_audio.wav", sample_rate, recording)  # Salva l'audio come file WAV
+    sd.wait()  # Wait for the recording to finish
 
-    #filtriamo l'audio con un passa banda
-    filtered_audio = bandpass_filter(recording, 300, 3400, sample_rate)
-    wav.write("filtered_audio.wav", sample_rate, filtered_audio.astype(np.int16))
+    # Apply a bandpass filter to the recorded audio
+    filtered_audio = bandpass_filter(recording, 300, 3400, sample_rate)  # Filter human speech frequencies
+    wav.write("filtered_audio.wav", sample_rate, filtered_audio.astype(np.int16))  # Save filtered audio
 
-    # Trascrivi l'audio con Whisper
-    model = whisper.load_model("base") # Scegli il modello che preferisci
-    result = model.transcribe("filtered_audio.wav")
-    return result["text"]
+    # Use the Whisper model to transcribe the filtered audio
+    model = whisper.load_model("base")  # Load the Whisper transcription model
+    result = model.transcribe("filtered_audio.wav")  # Perform transcription on the audio file
+    return result["text"]  # Return the transcribed text

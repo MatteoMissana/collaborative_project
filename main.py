@@ -24,7 +24,8 @@ arduino_port = 80           # Deve corrispondere alla porta configurata su Ardui
 
 # porcupine variables
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
-keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn', r'rob_arm_weights/robot-stop_en_windows_v3_0_0.ppn'] #change it if you have a mac
+keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn',
+                 r'rob_arm_weights/robot-stop_en_windows_v3_0_0.ppn'] #change them if you have a mac
 
 # txt path for saving movements
 txtpath = 'movements/movements.txt'
