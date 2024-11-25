@@ -2,6 +2,7 @@ import numpy as np
 import sounddevice as sd
 import scipy.io.wavfile as wav
 import whisper
+from scipy.signal import butter, lfilter
 
 
 def registra_audio(durata=3, frequenza=44100, nome_file="registrazione.wav"):
@@ -24,6 +25,20 @@ def get_next_audio_frame(stream, frame_length):
     pcm = np.squeeze(pcm)
     return pcm
 
+#definizione del filtro passa banda e del filtraggio
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    nyquist = 0.5 * fs  # Frequenza di Nyquist
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(order, [low, high], btype='band')
+    return b, a
+
+# Applicare il filtro al segnale
+def bandpass_filter(data, lowcut, highcut, fs, order=5):
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = lfilter(b, a, data)
+    return y
+
 def on_keyword_detected(keyword_index, sample_rate):
     print(f"Keyword {keyword_index + 1} detected! Now recording for 3 seconds...")
 
@@ -31,9 +46,13 @@ def on_keyword_detected(keyword_index, sample_rate):
     duration = 1 # in secondi
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
     sd.wait()  # Attendi la fine della registrazione
-    wav.write("audio/detected_audio.wav", sample_rate, recording)  # Salva l'audio come file WAV
+    #wav.write("audio/detected_audio.wav", sample_rate, recording)  # Salva l'audio come file WAV
+
+    #filtriamo l'audio con un passa banda
+    filtered_audio = bandpass_filter(recording, 300, 3400, sample_rate)
+    wav.write("filtered_audio.wav", sample_rate, filtered_audio.astype(np.int16))
 
     # Trascrivi l'audio con Whisper
-    model = whisper.load_model("large")  # Scegli il modello che preferisci
-    result = model.transcribe("audio/detected_audio.wav")
+    model = whisper.load_model("base") # Scegli il modello che preferisci
+    result = model.transcribe("filtered_audio.wav")
     return result["text"]

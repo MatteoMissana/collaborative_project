@@ -20,6 +20,7 @@ handle = pvporcupine.create(access_key=access_key, keyword_paths=keyword_paths)
 sample_rate = handle.sample_rate
 frame_length = handle.frame_length
 
+
 with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
     print("Listening...")
     while True:
