@@ -1,3 +1,52 @@
+class Txtfile:
+    def __init__(self, path):
+        self.maxlines = 5
+        self.path = path
+    def save_line(self, line, line_number):
+        """
+        Saves the line to a specific line of the text file in the format:
+        "speed,amplitude\n".
+        line: the line to save
+        line_number: the line index to save the line
+        """
+        # Open the file in read mode
+        txt_file = open(self.path, 'r')
+        # read the lines
+        lines = txt_file.readlines()
+        # Close the file
+        txt_file.close()
+
+        if lines[line_number] == '\n':
+            # Write the string to the file
+            lines[line_number] = line
+            # write the new lines
+            with open(self.path, 'w') as file:
+                file.writelines(lines)
+        else:
+            print('The movement is already occupied, delete the movement or save it in another position')
+
+    def delete_line(self, line_number):
+        '''
+        Deletes a specific line of the text file if it exists
+        :param line_number: the line to delete
+        '''
+        # Open the file in read mode
+        txt_file = open(self.path, 'r')
+        # read the lines
+        lines = txt_file.readlines()
+        # Close the file
+        txt_file.close()
+
+        if lines[line_number] == '\n':
+            print('There\'s no movement in the position you selected')
+        else:
+            # Write the string to the file
+            lines[line_number] = '/n'
+            # write the new lines
+            with open(self.path, 'w') as file:
+                file.writelines(lines)
+
+
 class Repetitive:
     """
     A class to represent a system with adjustable speed and amplitude,
@@ -53,20 +102,6 @@ class Repetitive:
         if self.amplitude >= 1:
             self.amplitude = self.amplitude - 1  # Decrement amplitude
 
-    def save_on_txt(self):
-        """
-        Saves the current speed and amplitude values to a text file in the format:
-        "speed,amplitude\n".
-        """
-        # Open the file in write mode
-        txt_file = open(self.txt_path, 'w')
-        # Create a string representation of the speed and amplitude
-        string = f"{self.speed},{self.amplitude}\n"
-        # Write the string to the file
-        txt_file.write(string)
-        # Close the file
-        txt_file.close()
-
     def encode_numbers(self):
         """
         Encodes the current speed and amplitude as a single character based on the formula:
@@ -80,6 +115,13 @@ class Repetitive:
         encoded_char = chr((self.speed - 1) * 5 + (self.amplitude - 1) + offset)
         return encoded_char
 
+    def save_settings(self, line_number):
+        '''
+        function that saves the current speed and amplitude to a text file in a certain line of the text file.
+        :param line_number: the line to save the settings to.
+        '''
+        txtfile = Txtfile(self.txt_path)
+        txtfile.save_line(f"Speed {self.speed}, Amplitude {self.amplitude}", line_number)
 
 
 

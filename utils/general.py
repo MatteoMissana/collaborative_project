@@ -3,6 +3,7 @@ import sounddevice as sd  # For audio input/output (recording and playback)
 import scipy.io.wavfile as wav  # For reading and writing .wav files
 import whisper  # OpenAI Whisper library for speech-to-text transcription
 from scipy.signal import butter, lfilter  # For creating and applying signal filters
+from jiwer import cer
 
 # Function to record audio and save it to a .wav file
 def registra_audio(durata=3, frequenza=44100, nome_file="registrazione.wav"):
@@ -86,10 +87,12 @@ def on_keyword_detected(keyword_index, sample_rate):
     - keyword_index (int): Index of the detected keyword.
     - sample_rate (int): Sampling rate in Hz.
     """
-    print(f"Keyword {keyword_index + 1} detected! Now recording for 3 seconds...")
 
     # Record a short audio segment upon keyword detection
-    duration = 1  # Duration of the recording in seconds
+    duration = 1.5  # Duration of the recording in seconds
+
+    print(f"Keyword {keyword_index + 1} detected! Now recording for {duration} seconds...")
+
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
     sd.wait()  # Wait for the recording to finish
 
@@ -101,3 +104,33 @@ def on_keyword_detected(keyword_index, sample_rate):
     model = whisper.load_model("base")  # Load the Whisper transcription model
     result = model.transcribe("filtered_audio.wav")  # Perform transcription on the audio file
     return result["text"]  # Return the transcribed text
+
+
+def compare_with_commands(commands, detection, threshold=0.5):
+    '''
+    function that compares the detection of whisper model to a list of commands
+
+    Parameters:
+        - commands (list): List of commands to compare.
+        - detection (string): detection that has to be compared to the commands
+        - threshold (float): maximum error tolerated to have a match
+
+    Outputs:
+        - index (int): index of the command that has the minimum error
+        - match (bool): True if there's a match
+    '''
+    match = False
+    # inizialize the error
+    error = [None] * len(commands)
+
+    # for each command, verify the distance from the detected message
+    for i, command in enumerate(commands):
+        error[i] = cer(detection, command)
+        if error[i] < threshold:
+            match=True
+
+    #if more than a command is similar to the detection i select the one with the lowest error
+    best_error = min(error)  # get the minimum value
+    index = error.index(best_error)  # get the index of the minimum
+
+    return index, match
