@@ -123,5 +123,18 @@ class Repetitive:
         txtfile = Txtfile(self.txt_path)
         txtfile.save_line(f"Speed {self.speed}, Amplitude {self.amplitude}", line_number)
 
+class Other_movement:
+    def __init__(self):
+        self.message = 'The current movement cannot be saved. Only repetitive movements can be saved'
+
+    def save_settings(self, line_number):
+        '''
+        Questa è solo una funzione per rispondere al caso in cui chiamo save movement quando il movimento non è ripetitivo
+
+        :param line_number: number of the line to save the settings to.
+        :return:
+        '''
+        print(self.message)
+
 
 

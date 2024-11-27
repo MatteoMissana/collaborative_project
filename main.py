@@ -1,7 +1,7 @@
 import pvporcupine
 import sounddevice as sd
 import utils.general as utils  # Importa il file utils con le funzioni
-from utils.movements import Repetitive
+from utils.movements import Repetitive, Other_movement
 from utils.wifi_connection import send_string_to_arduino
 
 # commands
@@ -33,6 +33,7 @@ frame_length = handle.frame_length
 
 with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
     print("Listening...")
+    mov = None # initialize as None to avoid errors when trying to save a movements and no movement selected
     while True:
         pcm_frame = utils.get_next_audio_frame(stream, frame_length) # Richiama la funzione dal file utils
         keyword_index = handle.process(pcm_frame)
@@ -55,60 +56,67 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
 
                         if comando_riconosciuto == 'up slow':
                             send_string_to_arduino('0', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'up fast':
                             send_string_to_arduino('1', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'up intermediate':
                             send_string_to_arduino('2', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'down slow':
                             send_string_to_arduino('3', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'down fast':
                             send_string_to_arduino('4', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'down intermediate':
                             send_string_to_arduino('5', arduino_ip, arduino_port)
+                            mov = Other_movement()
 
                         if comando_riconosciuto == 'repetitive':
-                            rep_mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             send_string_to_arduino('6', arduino_ip, arduino_port)
-
-                        if comando_riconosciuto == 'save movement':
-                            print('nothing')
-                            #TODO: pensare a come cazzo fare per salvare il movimento
-
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                 else:
                     print("Comando non riconosciuto. Ripeti, per favore.")
-            elif keyword_index == 1:
-                print('stoooooooooooooooop')
-                send_string_to_arduino('s', arduino_ip, arduino_port)
 
-            elif keyword_index == 2:
+            elif keyword_index == 1:  # IF ROBOT STOP
+                send_string_to_arduino('s', arduino_ip, arduino_port)
+                # TODO: we need to change character because this can be interpreted as an encoding of speed and amplitude
+
+            elif keyword_index == 2:  # IF SAVE MOVEMENT
+
                 # functions that returns the detected message
                 detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
 
                 print(f"Riconosciuto: {detection}")
 
                 if detection != '':
-                    # extract the best match from the commands list
-                    index, match = utils.compare_with_commands(commands_1, detection,0.8)
-                    print(match, index)
-                    if match:
-                        comando_riconosciuto = commands_1[index]
-                        print(comando_riconosciuto)
-                        if comando_riconosciuto == 'position one' or comando_riconosciuto == 'position 1':
-                            print("elisone")
-                        if comando_riconosciuto == 'position two' or comando_riconosciuto == 'position 2':
-                            print("elistwo")
-                        if comando_riconosciuto == 'position three' or comando_riconosciuto == 'position 3':
-                            print("elisthtree")
-                        if comando_riconosciuto == 'position four' or comando_riconosciuto == 'position 4':
-                            print("elisfour")
-                        if comando_riconosciuto == 'position five' or comando_riconosciuto == 'position 5':
-                            print("elisfive")
-
+                    if mov is not None:
+                        # extract the best match from the commands list
+                        index, match = utils.compare_with_commands(commands_1, detection,0.8)
+                        print(match, index)
+                        if match:
+                            comando_riconosciuto = commands_1[index]
+                            print(comando_riconosciuto)
+                            if comando_riconosciuto == 'position one' or comando_riconosciuto == 'position 1':
+                                mov.save_settings(line_number=0)
+                            if comando_riconosciuto == 'position two' or comando_riconosciuto == 'position 2':
+                                mov.save_settings(line_number=1)
+                            if comando_riconosciuto == 'position three' or comando_riconosciuto == 'position 3':
+                                mov.save_settings(line_number=2)
+                            if comando_riconosciuto == 'position four' or comando_riconosciuto == 'position 4':
+                                mov.save_settings(line_number=3)
+                            if comando_riconosciuto == 'position five' or comando_riconosciuto == 'position 5':
+                                mov.save_settings(line_number=4)
+                    else:
+                        print("decide a repetitive movement before saving")
+                else:
+                    print("command not recognized")
 
 #TODO:
 # 1 nel paper che abbiamo visto io e matteo fanno una sorta di validation in 
