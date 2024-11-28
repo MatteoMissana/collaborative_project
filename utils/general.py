@@ -103,6 +103,7 @@ def on_keyword_detected(keyword_index, sample_rate):
     # Use the Whisper model to transcribe the filtered audio
     model = whisper.load_model("base")  # Load the Whisper transcription model
     result = model.transcribe("filtered_audio.wav")  # Perform transcription on the audio file
+    print(f"Riconosciuto: {result['text']}")
     return result["text"]  # Return the transcribed text
 
 
