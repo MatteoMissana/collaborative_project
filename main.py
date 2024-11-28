@@ -11,6 +11,10 @@ commands = ["up fast", "up intermediate", "up slow", "down fast", "down intermed
 commands_1 = ["position one", "position two", "position three", "position four", "position five",
               'position 1', 'position 2', 'position 3', 'position 4', 'position 5']
 
+commands_amplitude = ["shorter", "longer"]
+
+commands_velocity = ["slower", "faster"]
+
 
 # Server configuration
 arduino_ip = "192.168.157.29"  # Insert Arduino IP address
