@@ -1,26 +1,22 @@
 import pvporcupine
 import sounddevice as sd
-import utils.general as utils  # Importa il file utils con le funzioni
+import utils.general as utils  # Import utils file with the needed functions
 from utils.movements import Repetitive, Other_movement
 from utils.wifi_connection import send_string_to_arduino
 
-# commands
-commands_robarm = ["up fast", "up intermediate", "up slow", "down fast", "down intermediate", "down slow", "repetitive", "movement 1",
+# Commands definition
+commands = ["up fast", "up intermediate", "up slow", "down fast", "down intermediate", "down slow", "repetitive", "movement 1",
             "movement 2", "movement 3", "movement 4", "movement 5", "save movement"]
 
-commands_save = ["position one", "position two", "position three", "position four", "position five",
+commands_1 = ["position one", "position two", "position three", "position four", "position five",
               'position 1', 'position 2', 'position 3', 'position 4', 'position 5']
 
-commands_velocity = ["slower", "longer"]
 
-commands_amplitude = ["shorter", "wider"]
-
-
-# Configurazioni del server
-arduino_ip = "192.168.157.29"  # Inserisci l'indirizzo IP di Arduino
+# Server configuration
+arduino_ip = "192.168.157.29"  # Insert Arduino IP address
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
-# porcupine variables
+# Porcupine variables
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
 
 keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn',
@@ -39,25 +35,25 @@ frame_length = handle.frame_length
 
 with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream:
     print("Listening...")
-    mov = None # initialize as None to avoid errors when trying to save a movements and no movement selected
+    mov = None # Initialize as None to avoid errors when trying to save a movements and no movement selected
     while True:
-        pcm_frame = utils.get_next_audio_frame(stream, frame_length) # Richiama la funzione dal file utils
+        pcm_frame = utils.get_next_audio_frame(stream, frame_length) # Recalls the function from the utils file
         keyword_index = handle.process(pcm_frame)
 
-        #if keyword is detected
+        # If the keyword is detected
         if keyword_index >= 0:
             print(keyword_index)
-            if keyword_index == 0: # IF ROBOTIC ARM
-                #functions that returns the detected message
-                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
+            if keyword_index == 0:
+                # Function that returns the detected message
+                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Recalls the function from the utils file
 
                 if detection != '':
 
-                    # extract the best match from the commands list
-                    index, match = utils.compare_with_commands(commands_robarm, detection)
+                    # Extract the best match from the commands list
+                    index, match = utils.compare_with_commands(commands, detection)
 
                     if match:
-                        comando_riconosciuto = commands_robarm[index]
+                        comando_riconosciuto = commands[index]
                         print(f"Riconosciuto: {comando_riconosciuto}")
 
                         if comando_riconosciuto == 'up slow':
@@ -99,13 +95,15 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                 # functions that returns the detected message
                 detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
 
+                print(f"Riconosciuto: {detection}")
+
                 if detection != '':
                     if mov is not None:
-                        # extract the best match from the commands list
-                        index, match = utils.compare_with_commands(commands_save, detection,0.8)
+                        # Extract the best match from the commands list
+                        index, match = utils.compare_with_commands(commands_1, detection,0.8)
                         print(match, index)
                         if match:
-                            comando_riconosciuto = commands_save[index]
+                            comando_riconosciuto = commands_1[index]
                             print(comando_riconosciuto)
                             if comando_riconosciuto == 'position one' or comando_riconosciuto == 'position 1':
                                 mov.save_settings(line_number=0)
