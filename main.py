@@ -25,7 +25,7 @@ model = whisper.load_model("base")  # Load the Whisper transcription model
 
 
 # Server configuration
-arduino_ip = "192.168.157.135"  # Insert Arduino IP address
+arduino_ip = "192.168.157.211"  # Insert Arduino IP address
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
 # Porcupine variables

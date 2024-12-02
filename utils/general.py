@@ -142,3 +142,13 @@ def compare_with_commands(commands, detection, threshold=0.5):
     index = error.index(best_error)  # get the index of the minimum
 
     return index, match
+
+def beep():
+    # Read the WAV file
+    samplerate, audio_data = read("beep_audio/short-beep-tone-47916.wav")
+
+    extended_audio = np.concatenate([audio_data, audio_data])
+
+    # Play the audio again (actual beep)
+    sd.play(extended_audio, samplerate)
+    sd.wait()

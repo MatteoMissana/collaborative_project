@@ -34,11 +34,15 @@ confusion_matrices = {threshold: np.zeros((len(commands_to_test), len(commands_t
 
 # Testing for each command and each threshold
 for command_index, command in enumerate(commands_to_test):
-    print(f"\nTestando il comando: '{command}'")
+    print(f"ATTENTION!!! the next command to be tested will be: {command}")
+    utils.beep()
+    utils.beep()
+    utils.beep()
     for threshold in thresholds:
         correct_count = 0
 
         for _ in range(n_repetitions):
+            print(f"\nTestando il comando: '{command}'")
             # Record audio and trsìanscribe it with Whisper
             detection = utils.on_keyword_detected(0, sample_rate, model)
             if not detection.strip():
