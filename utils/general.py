@@ -89,7 +89,7 @@ def on_keyword_detected(keyword_index, sample_rate):
     """
 
     # Record a short audio segment upon keyword detection
-    duration = 1.5  # Duration of the recording in seconds
+    duration = 2  # Duration of the recording in seconds
 
     print(f"Keyword {keyword_index + 1} detected! Now recording for {duration} seconds...")
 
