@@ -95,7 +95,7 @@ def on_keyword_detected(keyword_index, sample_rate):
     print(f"Keyword {keyword_index + 1} detected! Now recording for {duration} seconds...")
 
     # Read the WAV file
-    sample_rate, audio_data = read("beep_audio/short-beep-tone-47916.mp3")
+    sample_rate, audio_data = read("beep_audio/short-beep-tone-47916.wav")
 
     # Play the audio
     sd.play(audio_data, sample_rate)
