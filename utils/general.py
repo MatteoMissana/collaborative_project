@@ -1,7 +1,6 @@
 import numpy as np  # For numerical operations and array handling
 import sounddevice as sd  # For audio input/output (recording and playback)
 import scipy.io.wavfile as wav  # For reading and writing .wav files
-import whisper  # OpenAI Whisper library for speech-to-text transcription
 from scipy.signal import butter, lfilter  # For creating and applying signal filters
 from jiwer import cer
 from scipy.io.wavfile import read
@@ -80,7 +79,7 @@ def bandpass_filter(data, lowcut, highcut, fs, order=5):
     return y  # Return the filtered signal
 
 # Function triggered when a keyword is detected
-def on_keyword_detected(keyword_index, sample_rate):
+def on_keyword_detected(keyword_index, sample_rate, model):
     """
     Action performed when a keyword is detected.
 
@@ -95,12 +94,12 @@ def on_keyword_detected(keyword_index, sample_rate):
     print(f"Keyword {keyword_index + 1} detected! Now recording for {duration} seconds...")
 
     # Read the WAV file
-    sample_rate, audio_data = read("beep_audio/short-beep-tone-47916.wav")
+    samplerate, audio_data = read("beep_audio/short-beep-tone-47916.wav")
 
-    # Play the audio
-    sd.play(audio_data, sample_rate)
+    extended_audio = np.concatenate([audio_data, audio_data])
 
-    # Block until audio finishes
+    # Play the audio again (actual beep)
+    sd.play(extended_audio, samplerate)
     sd.wait()
 
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
@@ -110,8 +109,6 @@ def on_keyword_detected(keyword_index, sample_rate):
     filtered_audio = bandpass_filter(recording, 300, 3400, sample_rate)  # Filter human speech frequencies
     wav.write("filtered_audio.wav", sample_rate, filtered_audio.astype(np.int16))  # Save filtered audio
 
-    # Use the Whisper model to transcribe the filtered audio
-    model = whisper.load_model("base")  # Load the Whisper transcription model
     result = model.transcribe("filtered_audio.wav")  # Perform transcription on the audio file
     print(f"Riconosciuto: {result['text']}")
     return result["text"]  # Return the transcribed text

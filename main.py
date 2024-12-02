@@ -3,6 +3,7 @@ import sounddevice as sd
 import utils.general as utils  # Import utils file with the needed functions
 from utils.movements import Repetitive, Other_movement
 from utils.wifi_connection import send_string_to_arduino
+import whisper
 
 # Commands definition
 #robotic arm
@@ -19,9 +20,12 @@ commands_amplitude = ["shorter", "longer"]
 #velocity change
 commands_velocity = ["slower", "faster"]
 
+# Use the Whisper model to transcribe the filtered audio
+model = whisper.load_model("base")  # Load the Whisper transcription model
+
 
 # Server configuration
-arduino_ip = "192.168.157.29"  # Insert Arduino IP address
+arduino_ip = "192.168.157.135"  # Insert Arduino IP address
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
 # Porcupine variables
@@ -53,7 +57,7 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
             print(keyword_index)
             if keyword_index == 0: #ROBOTIC ARM
                 # Function that returns the detected message
-                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Recalls the function from the utils file
+                detection = utils.on_keyword_detected(keyword_index, sample_rate, model)  # Recalls the function from the utils file
 
                 if detection != '':
 
@@ -65,11 +69,11 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                         print(f"Riconosciuto: {comando_riconosciuto}")
 
                         if comando_riconosciuto == 'up slow':
-                            send_string_to_arduino('0', arduino_ip, arduino_port)
+                            send_string_to_arduino('1', arduino_ip, arduino_port)
                             mov = Other_movement()
 
                         if comando_riconosciuto == 'up fast':
-                            send_string_to_arduino('1', arduino_ip, arduino_port)
+                            send_string_to_arduino('2', arduino_ip, arduino_port)
                             mov = Other_movement()
 
                         if comando_riconosciuto == 'down slow':
@@ -119,12 +123,12 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                     print("Comando non riconosciuto. Ripeti, per favore.")
 
             elif keyword_index == 1:  # IF ROBOT STOP
-                send_string_to_arduino(str(0b00000000), arduino_ip, arduino_port)
+                send_string_to_arduino('0', arduino_ip, arduino_port)
 
             elif keyword_index == 2:  # IF SAVE MOVEMENT
 
                 # functions that returns the detected message
-                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
+                detection = utils.on_keyword_detected(keyword_index, sample_rate, model)  # Richiama la funzione dal file utils
 
                 print(f"Riconosciuto: {detection}")
 
@@ -153,7 +157,7 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
 
             elif keyword_index == 3:  # IF AMPLITUDE CHANGE
                 # functions that returns the detected message
-                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
+                detection = utils.on_keyword_detected(keyword_index, sample_rate, model)  # Richiama la funzione dal file utils
 
                 if detection != '':
                     if mov is not None:
@@ -171,7 +175,7 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
 
             elif keyword_index == 4:  # IF VELOCITY CHANGE
                 # functions that returns the detected message
-                detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Richiama la funzione dal file utils
+                detection = utils.on_keyword_detected(keyword_index, sample_rate, model)  # Richiama la funzione dal file utils
 
                 if detection != '':  # extract the best match from the commands list
                     if mov is not None:

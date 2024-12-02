@@ -1,11 +1,15 @@
-import sounddevice as sd
 import utils.general as utils  # Import utils file with the needed function
 import numpy as np
 import matplotlib.pyplot as plt
 import pvporcupine
 import seaborn as sns
+import whisper
+import os
+import json
 
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
+
+model = whisper.load_model("base")  # Load the Whisper transcription model
 
 keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn',
                  r'rob_arm_weights/robot-stop_en_windows_v3_0_0.ppn',
@@ -15,7 +19,7 @@ keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn',
 
 handle = pvporcupine.create(access_key=access_key, keyword_paths=keyword_paths)
 
-commands_to_test = ["up fast", "up intermediate", "up slow", "down fast", "down intermediate", "down slow",
+commands_to_test = ["up fast", "up slow", "down fast", "down slow",
                     "repetitive", "movement 1",
                     "movement 2", "movement 3", "movement 4", "movement 5"]
 
@@ -36,7 +40,7 @@ for command_index, command in enumerate(commands_to_test):
 
         for _ in range(n_repetitions):
             # Record audio and trsìanscribe it with Whisper
-            detection = utils.on_keyword_detected(0, sample_rate)
+            detection = utils.on_keyword_detected(0, sample_rate, model)
             if not detection.strip():
                 continue  # Skip if the transcription is empty
 
@@ -77,3 +81,28 @@ plt.legend(loc="best")
 plt.grid()
 plt.tight_layout()
 plt.show()
+
+# Trova un percorso incrementale per la directory dei risultati
+base_output_dir = "test_results/exp"
+output_dir = base_output_dir
+counter = 1
+
+while os.path.exists(output_dir):  # Incrementa il percorso finché non troviamo uno disponibile
+    output_dir = f"{base_output_dir}{counter}"
+    counter += 1
+
+os.makedirs(output_dir)  # Crea la directory
+print(f"Results will be saved in: {output_dir}")
+
+# Salva le matrici di confusione
+for threshold, matrix in confusion_matrices.items():
+    matrix_filename = os.path.join(output_dir, f"confusion_matrix_threshold_{threshold:.1f}.csv")
+    np.savetxt(matrix_filename, matrix, delimiter=",", fmt="%d",
+               header=",".join(commands_to_test), comments="")
+    print(f"Confusion matrix saved to {matrix_filename}")
+
+# Salva le accuratezze
+accuracies_filename = os.path.join(output_dir, "accuracies.json")
+with open(accuracies_filename, "w") as f:
+    json.dump(accuracies, f, indent=4)
+print(f"Accuracies saved to {accuracies_filename}")
