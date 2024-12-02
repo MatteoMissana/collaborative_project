@@ -8,6 +8,7 @@ import pvporcupine
 from scipy.signal import butter, lfilter  # For creating and applying signal filters
 import scipy.io.wavfile as wav  # For reading and writing .wav files
 import pandas as pd 
+import seaborn as sns
 
 access_key = "kIFt32liwTiKAA/2PW7z2BrsSh81BNsbi8wGk/Y8ss5coKZINR4Epg=="
 
@@ -15,63 +16,62 @@ keyword_paths = [r'rob_arm_weights\robotic-arm_en_windows_v3_0_0.ppn',
                  r'rob_arm_weights/robot-stop_en_windows_v3_0_0.ppn',
                  r'rob_arm_weights/save-movement_en_windows_v3_0_0.ppn',
                  r'rob_arm_weights/amplitude-change_en_windows_v3_0_0.ppn',
-                r'rob_arm_weights/velocity-change_en_windows_v3_0_0.ppn'] #change them if you have a mac
+                r'rob_arm_weights/velocity-change_en_windows_v3_0_0.ppn'] # Change them if you have a mac
 
 handle = pvporcupine.create(access_key=access_key, keyword_paths=keyword_paths)
-#sample_rate= 16000
+
 
 commands_to_test = ["up fast", "up intermediate", "up slow", "down fast", "down intermediate", "down slow", "repetitive", "movement 1",
             "movement 2", "movement 3", "movement 4", "movement 5", "save movement"]
 
 thresholds = np.arange(0.1, 1.6, 0.1) 
-n_repetitions = 10  # Numero di ripetizioni per ogni comando
+n_repetitions = 10  # Number of repetitions to test for each command
 accuracies = {command: [] for command in commands_to_test}
 sample_rate = handle.sample_rate
 
-# Test per ogni comando e soglia
+# Initialization of a data structure needed to build the confusion matrix
+confusion_matrices = {threshold: np.zeros((len(commands_to_test), len(commands_to_test)), dtype=int) for threshold in thresholds}
+
+
+# Testing for each command and each threshold
 for command in commands_to_test:
     print(f"\nTestando il comando: '{command}'")
     for threshold in thresholds:
-        correct_count = 0
-        true_positives = 0
-        false_positive_count = 0
-        false_negative_count = 0
-
+        
         for _ in range(n_repetitions):
-            # Registra l'audio e trascrive con Whisper
+            # Record audio and trsìanscribe it with Whisper
             detection = utils.on_keyword_detected(0, sample_rate)
             if not detection.strip():
-                continue  # Salta se la trascrizione è vuota
+                continue  # Skip if the transcription is empty
 
-            # Confronta il comando trascritto
+            # Comparison
             index, match = utils.compare_with_commands(commands_to_test, detection, threshold)
-            if match and commands_to_test[index] == command:
-                correct_count += 1
-
             if match:
-                if commands_to_test[index] == command:
-                    true_positives += 1  # Vero positivo
-                else:
-                    false_positive_count += 1  # Falso positivo
-            else:
-                false_negative_count += 1  # Falso negativo
+                confusion_matrices[threshold][command_index, index] += 1
+
+            if commands_to_test[index] == command:
+                correct_count += 1
 
             print(f"Detection: {detection}, Command: {commands_to_test[index]}")
 
 
-        # Calcola metriche
+        # Accuracy estimation
         total_tests = n_repetitions
         accuracy = (true_positives / total_tests) * 100
-        false_positive_rate = (false_positive_count / total_tests) * 100
-        false_negative_rate = (false_negative_count / total_tests) * 100
-        # Calcola l'accuratezza
-        accuracy = (correct_count / n_repetitions) * 100
         accuracies[command].append(accuracy)
         print(f"Threshold {threshold:.1f} - Accuratezza: {accuracy:.2f}%")
 
-        print(f"Threshold {threshold:.1f} - Accuratezza: {accuracy:.2f}%, Falsi Positivi: {false_positive_rate:.2f}%, Falsi Negativi: {false_negative_rate:.2f}%")
+# Visualization of the confuzion matrix
+for threshold, matrix in confusion_matrices.items():
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(matrix, annot=True, fmt="d", cmap="YlGnBu", xticklabels=commands_to_test, yticklabels=commands_to_test)
+    plt.title(f"Confusion Matrix at Threshold {threshold:.1f}")
+    plt.xlabel("Recognized Commands")
+    plt.ylabel("Actual Commands")
+    plt.tight_layout()
+    plt.show()
 
-# Plot dei risultati
+# Accuracy plot
 plt.figure(figsize=(12, 6))
 for command, acc in accuracies.items():
     plt.plot(thresholds, acc, label=f"Command: {command}")
@@ -83,18 +83,3 @@ plt.grid()
 plt.tight_layout()
 plt.show()
 
-#contingency table
-for i, threshold in enumerate(thresholds):
-      tp = acc[i] * n_repetitions / 100  # TP in base all'accuratezza
-      fp = false_positive_count  # Aggiusta qui con i valori reali
-      fn = false_negative_count  # Aggiusta qui con i valori reali
-      tn = n_repetitions - tp - fp - fn  # Calcolo TN
-      
-      contingency_data["Threshold"].append(threshold)
-      contingency_data["True Positives (TP)"].append(tp)
-      contingency_data["False Positives (FP)"].append(fp)
-      contingency_data["False Negatives (FN)"].append(fn)
-      contingency_data["True Negatives (TN)"].append(tn)
-
-contingency_df = pd.DataFrame(contingency_data)
-print(contingency_df)
