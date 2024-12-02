@@ -46,6 +46,26 @@ class Txtfile:
             with open(self.path, 'w') as file:
                 file.writelines(lines)
 
+    def load_line(self, line_number):
+        '''
+        Loads a specific movement of the text file if it exists
+        :param line_number: the line to load
+        :return: speed: int encoding the speed of the movement
+        :return: amplitude: int encoding the amplitude of the movement
+        '''
+        txt_file = open(self.path, 'r')
+        lines = txt_file.readlines()
+        txt_file.close()
+
+        if lines[line_number] == '\n':
+            print('There\'s no movement in the position you selected')
+        else:
+            speed = int(lines[line_number].split(',')[0])
+            amplitude = int(lines[line_number].split(',')[1])
+
+        return speed, amplitude
+
+
 
 class Repetitive:
     """
@@ -121,7 +141,11 @@ class Repetitive:
         :param line_number: the line to save the settings to.
         '''
         txtfile = Txtfile(self.txt_path)
-        txtfile.save_line(f"Speed {self.speed}, Amplitude {self.amplitude}", line_number)
+        txtfile.save_line(f"{self.speed},{self.amplitude}", line_number)
+
+    def load_from_txt(self, line_number):
+        txtfile = Txtfile(self.txt_path)
+        self.speed, self.amplitude = txtfile.load_line(line_number)
 
 class Other_movement:
     def __init__(self):

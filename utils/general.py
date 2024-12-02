@@ -4,6 +4,7 @@ import scipy.io.wavfile as wav  # For reading and writing .wav files
 import whisper  # OpenAI Whisper library for speech-to-text transcription
 from scipy.signal import butter, lfilter  # For creating and applying signal filters
 from jiwer import cer
+from scipy.io.wavfile import read
 
 # Function to record audio and save it to a .wav file
 def registra_audio(durata=3, frequenza=44100, nome_file="registrazione.wav"):
@@ -92,6 +93,15 @@ def on_keyword_detected(keyword_index, sample_rate):
     duration = 2  # Duration of the recording in seconds
 
     print(f"Keyword {keyword_index + 1} detected! Now recording for {duration} seconds...")
+
+    # Read the WAV file
+    sample_rate, audio_data = read("beep_audio/short-beep-tone-47916.mp3")
+
+    # Play the audio
+    sd.play(audio_data, sample_rate)
+
+    # Block until audio finishes
+    sd.wait()
 
     recording = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype='int16')
     sd.wait()  # Wait for the recording to finish

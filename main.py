@@ -5,14 +5,18 @@ from utils.movements import Repetitive, Other_movement
 from utils.wifi_connection import send_string_to_arduino
 
 # Commands definition
-commands = ["up fast", "up intermediate", "up slow", "down fast", "down intermediate", "down slow", "repetitive", "movement 1",
-            "movement 2", "movement 3", "movement 4", "movement 5", "save movement"]
+#robotic arm
+commands = ["up fast", "up slow", "down fast", "down slow", "repetitive", "movement 1",
+            "movement 2", "movement 3", "movement 4", "movement 5"]
 
+# save movement
 commands_1 = ["position one", "position two", "position three", "position four", "position five",
               'position 1', 'position 2', 'position 3', 'position 4', 'position 5']
 
+# amplitude change
 commands_amplitude = ["shorter", "longer"]
 
+#velocity change
 commands_velocity = ["slower", "faster"]
 
 
@@ -47,7 +51,7 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
         # If the keyword is detected
         if keyword_index >= 0:
             print(keyword_index)
-            if keyword_index == 0:
+            if keyword_index == 0: #ROBOTIC ARM
                 # Function that returns the detected message
                 detection = utils.on_keyword_detected(keyword_index, sample_rate)  # Recalls the function from the utils file
 
@@ -68,10 +72,6 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             send_string_to_arduino('1', arduino_ip, arduino_port)
                             mov = Other_movement()
 
-                        if comando_riconosciuto == 'up intermediate':
-                            send_string_to_arduino('2', arduino_ip, arduino_port)
-                            mov = Other_movement()
-
                         if comando_riconosciuto == 'down slow':
                             send_string_to_arduino('3', arduino_ip, arduino_port)
                             mov = Other_movement()
@@ -80,19 +80,46 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             send_string_to_arduino('4', arduino_ip, arduino_port)
                             mov = Other_movement()
 
-                        if comando_riconosciuto == 'down intermediate':
-                            send_string_to_arduino('5', arduino_ip, arduino_port)
-                            mov = Other_movement()
-
                         if comando_riconosciuto == 'repetitive':
-                            send_string_to_arduino('6', arduino_ip, arduino_port)
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port=arduino_port)
+
+                        if comando_riconosciuto == 'movement 1':
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            mov.load_from_txt(line_number = 0)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
+
+                        if comando_riconosciuto == 'movement 2':
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            mov.load_from_txt(line_number = 1)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
+
+                        if comando_riconosciuto == 'movement 3':
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            mov.load_from_txt(line_number = 2)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
+
+                        if comando_riconosciuto == 'movement 4':
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            mov.load_from_txt(line_number = 3)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
+
+                        if comando_riconosciuto == 'movement 5':
+                            mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
+                            mov.load_from_txt(line_number = 4)
+                            char = mov.encode_numbers()
+                            send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
+
                 else:
                     print("Comando non riconosciuto. Ripeti, per favore.")
 
             elif keyword_index == 1:  # IF ROBOT STOP
-                send_string_to_arduino('s', arduino_ip, arduino_port)
-                # TODO: we need to change character because this can be interpreted as an encoding of speed and amplitude
+                send_string_to_arduino(str(0b00000000), arduino_ip, arduino_port)
 
             elif keyword_index == 2:  # IF SAVE MOVEMENT
 
