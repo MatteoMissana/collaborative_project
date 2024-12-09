@@ -152,3 +152,21 @@ def beep():
     # Play the audio again (actual beep)
     sd.play(extended_audio, samplerate)
     sd.wait()
+
+def not_recognized():
+    print("Comando non riconosciuto. Ripeti, per favore.")
+    # Read the WAV file
+    samplerate, audio_data = read("beep_audio/sofi_audio_4.wav")
+
+    # Play the audio again (actual beep)
+    sd.play(audio_data, samplerate)
+    sd.wait()
+
+def error_select_repetitive():
+    print("Comando non riconosciuto. Ripeti, per favore.")
+    # Read the WAV file
+    samplerate, audio_data = read("beep_audio/repetitive_audio2.wav")
+
+    # Play the audio again (actual beep)
+    sd.play(audio_data, samplerate)
+    sd.wait()

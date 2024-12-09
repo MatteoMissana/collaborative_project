@@ -25,7 +25,7 @@ model = whisper.load_model("base")  # Load the Whisper transcription model
 
 
 # Server configuration
-arduino_ip = "192.168.157.211"  # Insert Arduino IP address
+arduino_ip = ("192.168.157.135")  # Insert Arduino IP address
 arduino_port = 80           # Deve corrispondere alla porta configurata su Arduino
 
 # Porcupine variables
@@ -119,8 +119,10 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
 
-                else:
-                    print("Comando non riconosciuto. Ripeti, per favore.")
+                    else: # the command is not in the list of possible commands
+                        utils.not_recognized()
+                else: #no word recognized
+                    utils.not_recognized()
 
             elif keyword_index == 1:  # IF ROBOT STOP
                 send_string_to_arduino('0', arduino_ip, arduino_port)
@@ -150,10 +152,13 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                                 mov.save_settings(line_number=3)
                             if comando_riconosciuto == 'position five' or comando_riconosciuto == 'position 5':
                                 mov.save_settings(line_number=4)
+                        else: #the command is not in the list
+                            utils.not_recognized()
                     else:
-                        print("decide a repetitive movement before saving")
-                else:
-                    print("command not recognized")
+                        utils.error_select_repetitive()
+
+                else: # no word recognized
+                    utils.not_recognized()
 
             elif keyword_index == 3:  # IF AMPLITUDE CHANGE
                 # functions that returns the detected message
@@ -172,6 +177,12 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             if comando_riconosciuto == commands_amplitude[1]:  # wider
                                 mov.amplitude_up()
                                 send_string_to_arduino(mov.encode_numbers(), arduino_ip, arduino_port)
+                        else: # the command is not in the list
+                            utils.not_recognized()
+                    else: #no repetitive movement selected
+                        utils.error_select_repetitive()
+                else: #string recognized is ''
+                    utils.not_recognized()
 
             elif keyword_index == 4:  # IF VELOCITY CHANGE
                 # functions that returns the detected message
@@ -189,6 +200,12 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             if comando_riconosciuto == commands_velocity[1]:  # faster
                                 mov.speed_up()
                                 send_string_to_arduino(mov.encode_numbers(), arduino_ip, arduino_port)
+                        else: #no match
+                            utils.not_recognized()
+                    else: # no movement selected
+                        utils.error_select_repetitive()
+                else: # detection = ''
+                    utils.not_recognized()
 
 #TODO:
 # 1 nel paper che abbiamo visto io e matteo fanno una sorta di validation in 
