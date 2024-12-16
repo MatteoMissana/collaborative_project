@@ -8,7 +8,8 @@ import whisper
 # Commands definition
 #robotic arm
 commands = ["up fast", "up slow", "down fast", "down slow", "repetitive", "movement 1",
-            "movement 2", "movement 3", "movement 4", "movement 5"]
+            "movement 2", "movement 3", "movement 4", "movement 5", "movement one", "movement two", "movement three",
+            "movement four", "movement five"]
 
 # save movement
 commands_1 = ["position one", "position two", "position three", "position four", "position five",
