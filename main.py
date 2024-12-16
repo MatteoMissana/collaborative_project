@@ -90,31 +90,31 @@ with sd.InputStream(samplerate=sample_rate, channels=1, dtype='int16') as stream
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port=arduino_port)
 
-                        if comando_riconosciuto == 'movement 1':
+                        if comando_riconosciuto == 'movement 1' or comando_riconosciuto == 'movement one':
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             mov.load_from_txt(line_number = 0)
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
 
-                        if comando_riconosciuto == 'movement 2':
+                        if comando_riconosciuto == 'movement 2' or comando_riconosciuto == 'movement two':
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             mov.load_from_txt(line_number = 1)
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
 
-                        if comando_riconosciuto == 'movement 3':
+                        if comando_riconosciuto == 'movement 3' or comando_riconosciuto == 'movement three':
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             mov.load_from_txt(line_number = 2)
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
 
-                        if comando_riconosciuto == 'movement 4':
+                        if comando_riconosciuto == 'movement 4' or comando_riconosciuto == 'movement four':
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             mov.load_from_txt(line_number = 3)
                             char = mov.encode_numbers()
                             send_string_to_arduino(message=char, arduino_ip=arduino_ip, arduino_port= arduino_port)
 
-                        if comando_riconosciuto == 'movement 5':
+                        if comando_riconosciuto == 'movement 5' or comando_riconosciuto == 'movement five':
                             mov = Repetitive(speed=3, amplitude=3, txt_path=txtpath)
                             mov.load_from_txt(line_number = 4)
                             char = mov.encode_numbers()
