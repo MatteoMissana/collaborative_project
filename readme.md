@@ -1,59 +1,48 @@
 # Collaborative Project
 
-Benvenuti nel repository **Collaborative Project**. Questo progetto include strumenti e funzionalità avanzate per il controllo vocale di un sistema di riconoscimento della parola chiave e di trascrizione automatica.
+This repository contains code and resources for a collaborative project involving voice commands and Arduino integration. Below, you will find the necessary steps to set up the project and descriptions of its main components.
 
-## Come clonare la repository
+## Cloning the Repository
 
-Per ottenere una copia locale del progetto, clona questa repository usando il comando seguente nel terminale:
-
+To clone this repository, use the following command:
 ```bash
 git clone https://github.com/MatteoMissana/collaborative_project.git
 ```
 
-Prima di eseguire il codice, assicurati di avere installato tutte le dipendenze necessarie. Queste sono specificate nel file requirements.txt. Puoi installarle utilizzando pip con il comando:
+## Installing Requirements
 
-```bash 
+Once the repository is cloned, navigate into the project directory and install the required Python dependencies:
+```bash
+cd collaborative_project
 pip install -r requirements.txt
 ```
 
-Nota: Si consiglia di utilizzare un ambiente virtuale per mantenere le dipendenze isolate. Per creare un ambiente virtuale, esegui
+## Project Files
 
-```bash 
-python -m venv nome_tuo_ambiente
-```
+### 1. Main Code for Voice Commands
+The primary script for handling voice commands is `main.py`. This file contains the logic for processing and executing voice commands.
 
-e attivalo prima di installare i requisiti.
-
-Per avviare il progetto, collegare la board di arduino al computer, caricarci il codice
-(arduino_robarm/arduino_robarm.ino) ed aprire il monitor seriale.
-Quando apparirà l'indirizzo ip a seriale, copiarlo ed incollarlo nel codice 
-python main.py. Poi esegui semplicemente lo script main.py. 
-
+To run it, execute:
 ```bash
 python main.py
 ```
-Questo script inizierà ad ascoltare l’audio per 
-rilevare parole chiave, trascrivere l'audio e mandare la trascrizione alla board, che la printa a seriale.
-Vabbè intanto fa questo, bisogna fare un po' di modifiche ovviamente. Alcune le ho contrssegnate con dei
-"# TODO:"
 
-Assicurati di avere il microfono collegato e correttamente configurato sul tuo dispositivo, poiché il sistema si basa sull'input audio in tempo reale.
+### 2. Evaluation of Accuracy and Confusion Matrices
+To evaluate the accuracy of the voice commands and generate confusion matrices, use `valutazione_accuracy.py`.
 
-Se riscontri problemi con l'autenticazione o il riconoscimento della parola chiave, verifica che la tua chiave di accesso sia valida e aggiornata nel codice.
+Run it as follows:
+```bash
+python valutazione_accuracy.py
+```
 
-## .gitignore - Guida Rapida
+### 3. Arduino Code
+The code for the Arduino component is located in the `./arduino_robarm/` subfolder. You can upload the relevant sketch to your Arduino device using the Arduino IDE or any compatible tool.
 
-Il file .gitignore indica a Git quali file e cartelle ignorare, evitando di tracciarli e committarli nel repository. È utile per escludere file generati automaticamente, di configurazione locale, o dati sensibili.
+## Contributions
+Feel free to contribute to this project by submitting pull requests or reporting issues in the repository's issue tracker.
 
-Come Funziona
+---
 
-Posizionamento: Inserisci .gitignore nella directory principale del progetto. Ogni entry sarà applicata a quella cartella e alle sue sottodirectory.
-
-Sintassi Base:
+Thank you for exploring this project. If you have any questions or need further assistance, please don't hesitate to reach out!
 
 
-nomefile.ext – Ignora file specifici
-
-cartella/ – Ignora l’intera cartella
-
-*.estensione – Ignora tutti i file con una specifica estensione (es. *.log)
