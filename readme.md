@@ -1,48 +1,82 @@
-# Collaborative Project
+# Collaborative Project - Voice-Controlled Robotic Arm
 
-This repository contains code and resources for a collaborative project involving voice commands and Arduino integration. Below, you will find the necessary steps to set up the project and descriptions of its main components.
+## Overview
 
-## Cloning the Repository
-
-To clone this repository, use the following command:
-```bash
-git clone https://github.com/MatteoMissana/collaborative_project.git
-```
-
-## Installing Requirements
-
-Once the repository is cloned, navigate into the project directory and install the required Python dependencies:
-```bash
-cd collaborative_project
-pip install -r requirements.txt
-```
-
-## Project Files
-
-### 1. Main Code for Voice Commands
-The primary script for handling voice commands is `main.py`. This file contains the logic for processing and executing voice commands.
-
-To run it, execute:
-```bash
-python main.py
-```
-
-### 2. Evaluation of Accuracy and Confusion Matrices
-To evaluate the accuracy of the voice commands and generate confusion matrices, use `valutazione_accuracy.py`.
-
-Run it as follows:
-```bash
-python valutazione_accuracy.py
-```
-
-### 3. Arduino Code
-The code for the Arduino component is located in the `./arduino_robarm/` subfolder. You can upload the relevant sketch to your Arduino device using the Arduino IDE or any compatible tool.
-
-## Contributions
-Feel free to contribute to this project by submitting pull requests or reporting issues in the repository's issue tracker.
+This project involves controlling a robotic arm using voice commands, evaluating system performance through accuracy and confusion matrices, and managing the robot's functionality via Arduino code. The code works on windows but can be easily adapted for other operating systems
 
 ---
 
-Thank you for exploring this project. If you have any questions or need further assistance, please don't hesitate to reach out!
+## Installation
 
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/MatteoMissana/collaborative_project
+   cd collaborative_project
+   ```
 
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. If you don't have FFMPEG installed, install it following this guide:
+
+https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/
+
+---
+
+## Project Structure
+
+- **`main.py`**  
+  The main script for implementing and managing voice commands.
+
+- **`valutazione_accuracy.py`**  
+  A script to evaluate system accuracy and generate confusion matrices.
+
+- **`./arduino_robarm/`**  
+  This folder contains the Arduino code for the robotic arm.
+
+---
+
+## Vocal Commands
+
+The following voice commands are supported to interact with the robotic arm:
+
+### **Robotic Arm Commands**
+- **Down**:  
+  - `DOWN SLOW`  
+  - `DOWN FAST`  
+- **Up**:  
+  - `UP SLOW`  
+  - `UP FAST`  
+- **Repetitive Movements**:  
+  - `MOVEMENT 1`, `MOVEMENT 2`, `MOVEMENT 3`, `MOVEMENT 4`, `MOVEMENT 5`
+
+### **Velocity Control**
+- `FASTER`  
+- `SLOWER`
+
+### **Amplitude Control**
+- `LONGER`  
+- `SHORTER`
+
+### **Saving Movements**
+- Save specific positions:  
+  - `POSITION 1`, `POSITION 2`, `POSITION 3`, `POSITION 4`, `POSITION 5`
+
+### **Stopping the Robot**
+- `ROBOT STOP`
+
+---
+
+## General Usage Guidelines
+
+1. Speak clearly for optimal recognition.  
+2. Wait for the beep sound before issuing a command.  
+3. Saved movements can be reviewed in the `movements.txt` file.  
+
+For additional details or troubleshooting, refer to the project documentation or contact the contributors.
+
+---
+
+Feel free to reach out for further assistance or inquiries!
