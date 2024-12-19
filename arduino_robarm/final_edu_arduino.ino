@@ -20,8 +20,8 @@ int numSteps = 100;
 bool flag = false;
 
 // Configurazioni WiFi
-const char* ssid = "sofia's A52";
-const char* password = "gwvt8605";
+const char* ssid = "YOUR_SSID";
+const char* password = "YOUR_PASSWORD";
 String data;
 int totalTime = 1500;
 int delta = 5000;
