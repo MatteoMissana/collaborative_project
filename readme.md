@@ -80,3 +80,5 @@ For additional details or troubleshooting, refer to the project documentation or
 ---
 
 Feel free to reach out for further assistance or inquiries!
+
+You ask anything to us at: matteo.missana@mail.polimi.it
